@@ -190,6 +190,9 @@ body.app-mode .appbar{display:grid;grid-template-columns:repeat(4,1fr);position:
 .appbar a svg{width:23px;height:23px}
 .appbar a:active{background:rgba(212,166,42,.12)}
 .appbar a.active{color:var(--gold-soft)}
+.wa-btn{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.1rem;padding:.8rem 1.3rem;border-radius:6px;background:#25D366;color:#07251b;font-weight:700;text-decoration:none;font-family:var(--display);letter-spacing:.02em}
+.wa-btn:hover{filter:brightness(1.06)}
+.wa-btn svg{width:22px;height:22px}
 </style>
 </head>
 <body>
@@ -408,8 +411,10 @@ body.app-mode .appbar{display:grid;grid-template-columns:repeat(4,1fr);position:
           <tr><th>Address</th><td>5 Moepol Street, Elspark, Germiston, 1449</td></tr>
           <tr><th>Telephone</th><td><a href="tel:+27818680802">081 868 0802</a></td></tr>
           <tr><th>Email</th><td><a href="mailto:jlcriskassesment@proton.me">jlcriskassesment@proton.me</a></td></tr>
+          <tr><th>WhatsApp</th><td><a href="https://wa.me/message/M6CAHFEDIKVXN1">Chat with us on WhatsApp</a></td></tr>
           <tr><th>Service area</th><td>South Africa – remote and on-site</td></tr>
         </table>
+        <a class="wa-btn" href="https://wa.me/message/M6CAHFEDIKVXN1"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.06 24l1.69-6.16a11.87 11.87 0 01-1.6-5.95C.16 5.3 5.5 0 12.05 0a11.8 11.8 0 018.4 3.49 11.8 11.8 0 013.48 8.41c0 6.55-5.34 11.89-11.89 11.89a11.9 11.9 0 01-5.68-1.45L.06 24zm6.6-3.8c1.68.99 3.28 1.59 5.39 1.59 5.44 0 9.87-4.43 9.88-9.88a9.85 9.85 0 00-2.9-7 9.82 9.82 0 00-6.98-2.9C6.6 1.6 2.17 6.02 2.16 11.47c0 2.22.65 3.88 1.74 5.62l-1 3.65 3.76-.99zm11.39-5.56c-.07-.12-.26-.2-.55-.34-.29-.14-1.72-.85-1.98-.95-.27-.1-.46-.14-.65.15-.2.29-.75.94-.92 1.14-.17.2-.34.22-.63.07-.29-.15-1.22-.45-2.32-1.44-.86-.76-1.44-1.7-1.6-1.99-.17-.29-.02-.45.12-.6.13-.13.29-.34.44-.5.15-.17.2-.29.3-.49.1-.2.05-.37-.02-.52-.07-.14-.65-1.58-.9-2.16-.24-.57-.48-.49-.65-.5l-.56-.01c-.2 0-.52.07-.79.37-.27.29-1.04 1.01-1.04 2.47 0 1.46 1.06 2.86 1.21 3.06.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.63.71.22 1.36.2 1.87.12.57-.08 1.72-.7 1.96-1.38.24-.68.24-1.26.17-1.38z"/></svg>Chat on WhatsApp</a>
       </div>
       <form id="enq" novalidate>
         <label>Name<input id="f-name"></label>
