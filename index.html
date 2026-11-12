@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>JLC OHS &amp; Compliance</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0B0A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="JLC OHS">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -19,6 +25,7 @@
   --mono:"IBM Plex Mono", Consolas, monospace;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65}
 .wrap{max-width:1140px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{margin:0;text-wrap:balance}
@@ -340,19 +347,28 @@ footer .mono{font-family:var(--display);letter-spacing:.2em;color:var(--gold);fo
   <section id="app" class="alt">
     <div class="wrap app">
       <div>
-        <p class="eyebrow">JLC app for Android</p>
-        <h2 style="margin-top:.7rem">Take JLC with you</h2>
-        <p class="muted" style="margin-top:1rem;max-width:34rem">Download the free JLC app to browse our services, compare plans and request an assessment straight from your phone.</p>
+        <p class="eyebrow">Get JLC on your phone</p>
+        <h2 style="margin-top:.7rem">Add JLC to your home screen</h2>
+        <p class="muted" style="margin-top:1rem;max-width:34rem">The fastest way to keep JLC one tap away. It adds the crest icon to your phone and opens full-screen, with no app store and no install warnings. Works on Android and iPhone.</p>
         <div style="display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.6rem">
-          <a class="btn btn-gold" href="JLC-OHS.apk" download="JLC-OHS.apk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download for Android</a>
-          <a class="btn btn-line" href="app.html">Install &amp; user guide</a>
+          <button class="btn btn-gold" id="installBtn" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Add to home screen</button>
+          <a class="btn btn-line" href="app.html#home-screen">How to add it</a>
         </div>
-        <p class="small" style="margin-top:.9rem">Version 1.0 · 45 KB · Android 6.0 or newer. On iPhone? The guide shows how to add JLC to your home screen.</p>
+        <p class="small" id="installHint" style="margin-top:.9rem">On Android, tap your browser menu (⋮) and choose <b>Add to Home screen</b> or <b>Install app</b>. On iPhone, tap <b>Share</b> then <b>Add to Home Screen</b>.</p>
         <div class="feats">
           <div><b>Services &amp; plans</b><span>Everything on this website, full-screen on your phone.</span></div>
           <div><b>Request an assessment</b><span>Send an enquiry in under a minute.</span></div>
-          <div><b>One-tap contact</b><span>Call or email JLC straight from the app.</span></div>
-          <div><b>Client area · coming soon</b><span>Evidence upload, action tracking and expiry reminders for subscribers.</span></div>
+          <div><b>One-tap contact</b><span>Call or email JLC straight from your phone.</span></div>
+          <div><b>Works offline-friendly</b><span>Opens straight to JLC whenever you need it.</span></div>
+        </div>
+        <div style="margin-top:2rem;padding-top:1.6rem;border-top:1px solid var(--line)">
+          <p class="eyebrow">Prefer an installed app?</p>
+          <p class="muted" style="margin-top:.6rem;max-width:34rem">Android users can also download the JLC app file. It needs a few extra setup taps the first time — the guide walks you through them.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1rem">
+            <a class="btn btn-line" href="JLC-OHS.apk" download="JLC-OHS.apk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download Android app</a>
+            <a class="btn btn-line" href="app.html">Install guide</a>
+          </div>
+          <p class="small" style="margin-top:.7rem">Version 1.0 · 45 KB · Android 6.0 or newer.</p>
         </div>
       </div>
       <div class="phone" aria-label="Example of the coming client area">
@@ -430,6 +446,15 @@ footer .mono{font-family:var(--display);letter-spacing:.2em;color:var(--gold);fo
     .catch(function(){msg.textContent='Your enquiry could not be sent. Please email jlcriskassesment@proton.me or call 081 868 0802.';})
     .finally(function(){btn.disabled=false;});
   });
+})();
+</script>
+<script>
+(function(){
+  var btn=document.getElementById('installBtn'), hint=document.getElementById('installHint'), deferred=null;
+  if(!btn) return;
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;btn.hidden=false;if(hint)hint.hidden=true;});
+  btn.addEventListener('click',function(){if(!deferred)return;deferred.prompt();deferred.userChoice.finally(function(){deferred=null;btn.hidden=true;});});
+  window.addEventListener('appinstalled',function(){btn.hidden=true;if(hint){hint.hidden=false;hint.textContent='JLC is now on your home screen. Thank you.';}});
 })();
 </script>
 </body>
