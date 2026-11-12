@@ -430,21 +430,24 @@ footer .mono{font-family:var(--display);letter-spacing:.2em;color:var(--gold);fo
     document.querySelectorAll('.amt,.save-note').forEach(function(el){el.innerHTML=annual?el.dataset.a:el.dataset.m;});}
   m.onclick=function(){set(false)}; a.onclick=function(){set(true)};
   document.getElementById('enq').addEventListener('submit',function(e){e.preventDefault();
-    var msg=document.getElementById('form-msg'), btn=this.querySelector('button[type=submit]');
+    var form=this, msg=document.getElementById('form-msg'), btn=form.querySelector('button[type=submit]');
     var v=function(id){return document.getElementById(id).value.trim();};
     if(!v('f-name')||!v('f-email')){msg.textContent='Add your name and email so we can reply.';return;}
     if(document.getElementById('f-hp').value){return;}
     btn.disabled=true; msg.textContent='Sending…';
-    fetch('https://formsubmit.co/ajax/jlcriskassesment@proton.me',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+    var done=false, fail='Your enquiry could not be sent just now. Please email jlcriskassesment@proton.me or call 081 868 0802.';
+    var finish=function(text,reset){if(done)return;done=true;msg.textContent=text;btn.disabled=false;if(reset)form.reset();};
+    var ctrl=new AbortController();
+    var timer=setTimeout(function(){ctrl.abort();finish(fail,false);},15000);
+    fetch('https://formsubmit.co/ajax/jlcriskassesment@proton.me',{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify({_subject:'New JLC enquiry – '+(v('f-co')||v('f-name')),_template:'table',_captcha:'false',_replyto:v('f-email'),
         Name:v('f-name'),Company:v('f-co'),Email:v('f-email'),Phone:v('f-tel'),Service:v('f-svc'),Plan:v('f-plan'),Message:v('f-msg')})})
-    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
-    .then(function(res){
-      if(res.ok && String(res.j.success)==='true'){msg.textContent='Thank you, your enquiry has been sent. We will reply within one working day.';document.getElementById('enq').reset();}
-      else{throw new Error(res.j.message||'failed');}
+    .then(function(r){return r.json().catch(function(){return {};});})
+    .then(function(j){clearTimeout(timer);
+      if(j && String(j.success)==='true'){finish('Thank you, your enquiry has been sent. We will reply within one working day.',true);}
+      else{finish(fail,false);}
     })
-    .catch(function(){msg.textContent='Your enquiry could not be sent. Please email jlcriskassesment@proton.me or call 081 868 0802.';})
-    .finally(function(){btn.disabled=false;});
+    .catch(function(){clearTimeout(timer);finish(fail,false);});
   });
 })();
 </script>
