@@ -383,6 +383,7 @@ footer .mono{font-family:var(--display);letter-spacing:.2em;color:var(--gold);fo
         <label>Phone<input id="f-tel" type="tel"></label>
         <label class="full">Service<select id="f-svc"><option>Risk assessment</option><option>Remote digital site assessment</option><option>Safety file development</option><option>Contractor compliance safety file</option><option>Workplace inspection / OHS audit</option><option>Training &amp; safety awareness</option><option>Ongoing compliance management</option></select></label>
         <label class="full">Plan<select id="f-plan"><option>Once-off</option><option>Compliance subscription – monthly</option><option>Compliance subscription – annual</option><option>Site subscription – monthly</option><option>Site subscription – annual</option></select></label>
+        <input type="text" id="f-hp" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
         <label class="full">About your workplace<textarea id="f-msg" placeholder="Type of work, number of employees, location"></textarea></label>
         <div class="full" style="display:flex;flex-wrap:wrap;align-items:center;gap:1rem"><button class="btn btn-gold" type="submit">Send enquiry</button><span id="form-msg" role="status"></span></div>
       </form>
@@ -408,12 +409,22 @@ footer .mono{font-family:var(--display);letter-spacing:.2em;color:var(--gold);fo
     document.querySelectorAll('.amt,.save-note').forEach(function(el){el.innerHTML=annual?el.dataset.a:el.dataset.m;});}
   m.onclick=function(){set(false)}; a.onclick=function(){set(true)};
   document.getElementById('enq').addEventListener('submit',function(e){e.preventDefault();
-    var msg=document.getElementById('form-msg');
-    if(!document.getElementById('f-name').value.trim()||!document.getElementById('f-email').value.trim()){msg.textContent='Add your name and email so we can reply.';return;}
+    var msg=document.getElementById('form-msg'), btn=this.querySelector('button[type=submit]');
     var v=function(id){return document.getElementById(id).value.trim();};
-    var body='Name: '+v('f-name')+'\nCompany: '+v('f-co')+'\nEmail: '+v('f-email')+'\nPhone: '+v('f-tel')+'\nService: '+v('f-svc')+'\nPlan: '+v('f-plan')+'\n\n'+v('f-msg');
-    window.location.href='mailto:jlcriskassesment@proton.me?subject='+encodeURIComponent('Assessment enquiry – '+(v('f-co')||v('f-name')))+'&body='+encodeURIComponent(body);
-    msg.textContent='Your email app should open with the enquiry ready to send. If it doesn\'t, email jlcriskassesment@proton.me or call 081 868 0802.';});
+    if(!v('f-name')||!v('f-email')){msg.textContent='Add your name and email so we can reply.';return;}
+    if(document.getElementById('f-hp').value){return;}
+    btn.disabled=true; msg.textContent='Sending…';
+    fetch('https://formsubmit.co/ajax/jlcriskassesment@proton.me',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({_subject:'New JLC enquiry – '+(v('f-co')||v('f-name')),_template:'table',_captcha:'false',_replyto:v('f-email'),
+        Name:v('f-name'),Company:v('f-co'),Email:v('f-email'),Phone:v('f-tel'),Service:v('f-svc'),Plan:v('f-plan'),Message:v('f-msg')})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(res){
+      if(res.ok && String(res.j.success)==='true'){msg.textContent='Thank you, your enquiry has been sent. We will reply within one working day.';document.getElementById('enq').reset();}
+      else{throw new Error(res.j.message||'failed');}
+    })
+    .catch(function(){msg.textContent='Your enquiry could not be sent. Please email jlcriskassesment@proton.me or call 081 868 0802.';})
+    .finally(function(){btn.disabled=false;});
+  });
 })();
 </script>
 </body>
